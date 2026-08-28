@@ -149,7 +149,7 @@ export function ParkingPage() {
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-1">
+        <Card className="min-w-0 lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Building2 className="h-4 w-4" /> Bloques
@@ -264,7 +264,7 @@ export function ParkingPage() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2">
+        <Card className="min-w-0 lg:col-span-2">
           <CardHeader className="flex-row items-center justify-between gap-3 space-y-0">
             <CardTitle className="flex items-center gap-2">
               <ParkingSquare className="h-4 w-4" /> Espacios

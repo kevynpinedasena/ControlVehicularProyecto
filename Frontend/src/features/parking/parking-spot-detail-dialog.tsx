@@ -196,7 +196,7 @@ export function ParkingSpotDetailDialog({
           {vehiculosDelSpotQuery.data?.length === 0 ? (
             <EmptyState icon={Car} title="Sin vehículos asignados" />
           ) : (
-            <div className="overflow-hidden rounded-lg border border-border">
+            <div className="overflow-x-auto rounded-lg border border-border">
               <table className="w-full text-sm">
                 <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
                   <tr>

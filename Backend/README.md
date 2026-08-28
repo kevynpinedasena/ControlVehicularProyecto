@@ -168,3 +168,9 @@ Todas las respuestas de error siguen el formato:
 Códigos relevantes de multi-tenancy: `SLUG_DUPLICADO`, `UNIDAD_NEGOCIO_INACTIVA`,
 `ACCESO_UNIDAD_NEGOCIO_INVALIDO` (el usuario existe pero no pertenece a la unidad indicada, o un
 administrador de plataforma intentó loguearse con un `slug_unidad_negocio`).
+
+------------- Desplegado ------------------
+https://control-vehicular-proyecto.vercel.app/
+Base de datos: https://console.neon.tech/app/projects/empty-lake-63501251/branches/br-sparkling-unit-acggn6fv/tables
+Frontend: Verse
+Backend: Render

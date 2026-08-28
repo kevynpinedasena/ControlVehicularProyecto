@@ -52,6 +52,7 @@ export function UsersPage() {
         ) : usuariosQuery.data?.length === 0 ? (
           <EmptyState icon={UsersIcon} title="No hay usuarios" />
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
               <tr>
@@ -92,6 +93,7 @@ export function UsersPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
         {usuariosQuery.data && usuariosQuery.data.length > 0 && (
           <Pagination

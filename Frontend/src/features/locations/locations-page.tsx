@@ -146,7 +146,7 @@ export function LocationsPage() {
       <p className="mt-1 text-muted-foreground">Estructura física del conjunto residencial</p>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        <Card>
+        <Card className="min-w-0">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Building2 className="h-4 w-4" /> Torres
@@ -238,7 +238,7 @@ export function LocationsPage() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="min-w-0">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Home className="h-4 w-4" /> Apartamentos

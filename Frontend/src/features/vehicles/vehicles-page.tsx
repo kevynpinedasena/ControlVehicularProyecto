@@ -93,6 +93,7 @@ export function VehiclesPage() {
         ) : vehiculosQuery.data?.length === 0 ? (
           <EmptyState icon={Car} title="No hay vehículos" description="Registra el primer vehículo" />
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
               <tr>
@@ -138,6 +139,7 @@ export function VehiclesPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
         {vehiculosQuery.data && vehiculosQuery.data.length > 0 && (
           <Pagination

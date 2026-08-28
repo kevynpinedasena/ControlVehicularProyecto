@@ -61,6 +61,7 @@ export function BusinessUnitsPage() {
         ) : unidadesQuery.data?.length === 0 ? (
           <EmptyState icon={Building2} title="Sin unidades de negocio" description="Crea la primera" />
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
               <tr>
@@ -137,6 +138,7 @@ export function BusinessUnitsPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
         {unidadesQuery.data && unidadesQuery.data.length > 0 && (
           <Pagination

@@ -131,6 +131,7 @@ export function ResidentsPage() {
             description="Registra el primer residente del conjunto"
           />
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
               <tr>
@@ -202,6 +203,7 @@ export function ResidentsPage() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
         {residentesQuery.data && residentesQuery.data.length > 0 && (
           <Pagination
