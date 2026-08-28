@@ -130,13 +130,17 @@ registrada), control de acceso por rol, y el flujo completo de creación de unid
 ## 11. Credenciales iniciales de desarrollo
 
 El script de siembra (`app/infrastructure/database/seed.py`, ejecutado automáticamente por Docker)
-crea únicamente los 3 roles y el usuario **Administrador de Plataforma**:
+crea únicamente los 3 roles y el usuario **Administrador de Plataforma**, con el correo y la
+contraseña definidos en las variables de entorno `ADMIN_PLATAFORMA_CORREO` y
+`ADMIN_PLATAFORMA_PASSWORD`. Si no se configuran, se usan estos valores por defecto (solo para
+desarrollo local):
 
 - **Correo:** `plataforma@conjunto.com`
 - **Contraseña:** `Plataforma123!`
 
 Con esta cuenta se crean las unidades de negocio (conjuntos) y su primer Super Administrador desde
-`POST /api/v1/business-units`. Cambiar esta contraseña antes de cualquier despliegue real.
+`POST /api/v1/business-units`. **En cualquier despliegue real, define ambas variables de entorno con
+tus propios valores antes del primer arranque** — no dejes la contraseña de ejemplo.
 
 ## 12. Endpoints principales
 
