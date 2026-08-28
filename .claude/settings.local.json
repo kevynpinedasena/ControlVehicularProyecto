@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker volume *)",
+      "Bash(curl -s http://localhost:8010/health)",
+      "Bash(curl -s -X POST http://localhost:8010/api/v1/auth/login -H \"Content-Type: application/json\" -d '{\"correo\":\"admin@conjunto.com\",\"password\":\"Admin123!\"}')",
+      "Bash(npx tsc *)",
+      "Bash(curl -s http://localhost:5173/)",
+      "Bash(curl -s -m 10 -o /dev/null -w \"codigo=%{http_code}\\\\n\" http://127.0.0.1:5173/)",
+      "Bash(curl -s -m 10 http://127.0.0.1:5173/)",
+      "Bash(npm ls *)",
+      "Bash(npx --yes playwright --version)",
+      "Bash(mkdir -p /c/Users/pined/AppData/Local/Temp/claude/c--Users-pined-OneDrive-Im-genes-Archivos-del-escritorio-DESARROLLO-PROYECTO-PERSONAL-CONJUNTO/f5dea54f-3047-42e6-955b-757277bb4c34/scratchpad/pw-check)",
+      "Read(//c/Users/pined/AppData/Local/Temp/claude/c--Users-pined-OneDrive-Im-genes-Archivos-del-escritorio-DESARROLLO-PROYECTO-PERSONAL-CONJUNTO/f5dea54f-3047-42e6-955b-757277bb4c34/scratchpad/**)",
+      "Bash(npm init *)",
+      "Bash(npx playwright *)"
+    ]
+  }
+}
