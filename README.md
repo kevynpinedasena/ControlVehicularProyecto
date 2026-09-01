@@ -36,8 +36,10 @@ Levanta PostgreSQL, el backend (con migraciones y siembra automáticas) y el fro
 
 ## Primer uso
 
-1. Entra a **http://localhost:5173/plataforma/login** con las credenciales sembradas:
-   `plataforma@conjunto.com` / `Plataforma123!`
+1. Entra a **http://localhost:5173/plataforma/login** con la cuenta de Administrador de Plataforma
+   sembrada automáticamente al arrancar (correo y contraseña definidos en las variables de entorno
+   `ADMIN_PLATAFORMA_CORREO` / `ADMIN_PLATAFORMA_PASSWORD` de tu `.env` — ver
+   [Backend/README.md](Backend/README.md#11-credenciales-iniciales-de-desarrollo)).
 2. Crea tu primera unidad de negocio (nombre, código/slug, colores, logo opcional, y los datos de
    su Super Administrador).
 3. Ve a **http://localhost:5173**, escribe el código (slug) de esa unidad, e inicia sesión con el

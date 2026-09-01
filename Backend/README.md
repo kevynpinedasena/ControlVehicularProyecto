@@ -132,15 +132,12 @@ registrada), control de acceso por rol, y el flujo completo de creación de unid
 El script de siembra (`app/infrastructure/database/seed.py`, ejecutado automáticamente por Docker)
 crea únicamente los 3 roles y el usuario **Administrador de Plataforma**, con el correo y la
 contraseña definidos en las variables de entorno `ADMIN_PLATAFORMA_CORREO` y
-`ADMIN_PLATAFORMA_PASSWORD`. Si no se configuran, se usan estos valores por defecto (solo para
-desarrollo local):
-
-- **Correo:** `plataforma@conjunto.com`
-- **Contraseña:** `Plataforma123!`
+`ADMIN_PLATAFORMA_PASSWORD` de tu `.env` (ver `.env.example`). Si no se configuran, el código usa
+un valor de ejemplo pensado únicamente para desarrollo local.
 
 Con esta cuenta se crean las unidades de negocio (conjuntos) y su primer Super Administrador desde
 `POST /api/v1/business-units`. **En cualquier despliegue real, define ambas variables de entorno con
-tus propios valores antes del primer arranque** — no dejes la contraseña de ejemplo.
+tus propios valores antes del primer arranque** — nunca dejes el valor de ejemplo.
 
 ## 12. Endpoints principales
 
@@ -168,9 +165,3 @@ Todas las respuestas de error siguen el formato:
 Códigos relevantes de multi-tenancy: `SLUG_DUPLICADO`, `UNIDAD_NEGOCIO_INACTIVA`,
 `ACCESO_UNIDAD_NEGOCIO_INVALIDO` (el usuario existe pero no pertenece a la unidad indicada, o un
 administrador de plataforma intentó loguearse con un `slug_unidad_negocio`).
-
-------------- Desplegado ------------------
-https://control-vehicular-proyecto.vercel.app/
-Base de datos: https://console.neon.tech/app/projects/empty-lake-63501251/branches/br-sparkling-unit-acggn6fv/tables
-Frontend: Verse
-Backend: Render
