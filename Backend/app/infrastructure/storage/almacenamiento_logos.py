@@ -1,14 +1,24 @@
-"""Almacenamiento local de archivos subidos (logos de unidades de negocio)."""
-import uuid
+"""Almacenamiento de logos de unidades de negocio como data URI en la base de datos.
+
+Se guarda embebido en la fila (columna `logo_url`, de tipo texto) en vez de en el disco del
+contenedor: en un despliegue como Render, el disco no es persistente y cualquier archivo subido
+se perdería en el siguiente redeploy. La base de datos (Neon/Postgres) sí persiste.
+"""
+import base64
 from pathlib import Path
 
 from fastapi import UploadFile
 
 from app.domain.exceptions.excepciones import ErrorDominio
 
-DIRECTORIO_LOGOS = Path("uploads/logos")
-EXTENSIONES_PERMITIDAS = {".png", ".jpg", ".jpeg", ".svg", ".webp"}
-TAMANO_MAXIMO_BYTES = 5 * 1024 * 1024  # 5 MB
+_EXTENSION_A_MIME = {
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".svg": "image/svg+xml",
+    ".webp": "image/webp",
+}
+TAMANO_MAXIMO_BYTES = 1 * 1024 * 1024  # 1 MB (se transmite en cada carga de la pantalla de ingreso)
 
 
 class ArchivoInvalidoError(ErrorDominio):
@@ -16,20 +26,17 @@ class ArchivoInvalidoError(ErrorDominio):
 
 
 async def guardar_logo(archivo: UploadFile) -> str:
-    """Guarda la imagen subida en disco y devuelve la ruta pública para servirla."""
+    """Valida la imagen subida y la devuelve codificada como data URI (`data:<mime>;base64,...`)."""
     extension = Path(archivo.filename or "").suffix.lower()
-    if extension not in EXTENSIONES_PERMITIDAS:
+    tipo_mime = _EXTENSION_A_MIME.get(extension)
+    if tipo_mime is None:
         raise ArchivoInvalidoError(
             "Formato de imagen no permitido. Usa PNG, JPG, SVG o WEBP"
         )
 
     contenido = await archivo.read()
     if len(contenido) > TAMANO_MAXIMO_BYTES:
-        raise ArchivoInvalidoError("La imagen no debe superar los 5 MB")
+        raise ArchivoInvalidoError("La imagen no debe superar 1 MB")
 
-    DIRECTORIO_LOGOS.mkdir(parents=True, exist_ok=True)
-    nombre_archivo = f"{uuid.uuid4().hex}{extension}"
-    ruta = DIRECTORIO_LOGOS / nombre_archivo
-    ruta.write_bytes(contenido)
-
-    return f"/uploads/logos/{nombre_archivo}"
+    codificado = base64.b64encode(contenido).decode("ascii")
+    return f"data:{tipo_mime};base64,{codificado}"

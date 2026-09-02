@@ -1,9 +1,6 @@
 """Punto de entrada de la aplicación FastAPI."""
-from pathlib import Path
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 
 from app.config.settings import obtener_configuracion
 from app.presentation.api.v1.router import router_v1
@@ -31,9 +28,6 @@ app.add_middleware(
 )
 
 registrar_manejadores_excepciones(app)
-
-Path("uploads/logos").mkdir(parents=True, exist_ok=True)
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 app.include_router(router_v1)
 

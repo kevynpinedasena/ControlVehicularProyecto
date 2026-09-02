@@ -32,7 +32,9 @@ presentation → application → domain ← infrastructure
   uso de un recurso "de conjunto" (torres, residentes, vehículos, usuarios) recibe explícitamente
   el `unidad_negocio_id` del llamador y valida que todo lo que toca pertenezca a esa misma unidad.
 - **`infrastructure/`**: repositorios con SQLAlchemy, modelos ORM, sesión de base de datos,
-  hashing de contraseñas, JWT y almacenamiento local de logos subidos.
+  hashing de contraseñas, JWT y almacenamiento de logos subidos (codificados como data URI y
+  guardados en la misma fila de la base de datos, para que sobrevivan a un despliegue con disco
+  no persistente).
 - **`presentation/`**: routers de FastAPI, esquemas Pydantic y dependencias de inyección
   (repositorios, casos de uso, autenticación, autorización por rol y extracción del
   `unidad_negocio_id` desde el token).
@@ -71,7 +73,6 @@ Backend/
 │   └── main.py
 ├── migrations/            # Alembic
 ├── tests/{unit,integration}/
-├── uploads/logos/         # logos subidos (volumen persistente en Docker)
 ├── Dockerfile
 ├── docker-entrypoint.sh
 ├── requirements.txt

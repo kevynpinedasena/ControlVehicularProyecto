@@ -8,6 +8,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     String,
+    Text,
     UniqueConstraint,
     func,
 )
@@ -23,7 +24,7 @@ class UnidadNegocioModel(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre: Mapped[str] = mapped_column(String(150), nullable=False)
     slug: Mapped[str] = mapped_column(String(80), unique=True, nullable=False, index=True)
-    logo_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    logo_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     color_primario: Mapped[str] = mapped_column(String(20), nullable=False, default="#2563eb")
     color_secundario: Mapped[str] = mapped_column(String(20), nullable=False, default="#1e293b")
     activo: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)

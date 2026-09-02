@@ -37,8 +37,6 @@ services:
       ADMIN_PLATAFORMA_PASSWORD: ${ADMIN_PLATAFORMA_PASSWORD:-Plataforma123!}
     ports:
       - "${BACKEND_PORT:-8000}:8000"
-    volumes:
-      - backend_uploads:/app/uploads
     depends_on:
       postgres:
         condition: service_healthy
@@ -66,4 +64,3 @@ networks:
 
 volumes:
   postgres_data:
-  backend_uploads:
