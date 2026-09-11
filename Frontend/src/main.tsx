@@ -4,7 +4,6 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 
 import { router } from "@/app/router";
-import { GlobalLoadingOverlay } from "@/components/shared/global-loading-overlay";
 import { AuthProvider } from "@/features/auth/auth-context";
 
 import "@/index.css";
@@ -20,7 +19,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <RouterProvider router={router} />
-        <GlobalLoadingOverlay />
       </AuthProvider>
     </QueryClientProvider>
   </React.StrictMode>,
