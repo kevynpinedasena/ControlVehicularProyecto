@@ -34,13 +34,15 @@ export function GlobalLoadingOverlay() {
             transition={{ type: "spring", stiffness: 320, damping: 24 }}
             className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card px-7 py-6 shadow-xl"
           >
+            {/* Color fijo a propósito (no --primary): algunos conjuntos configuran un color
+                primario gris/neutro, lo que dejaría el spinner sin vida en su marca. */}
             <div className="relative flex h-12 w-12 items-center justify-center">
               <motion.span
-                className="absolute inset-0 rounded-full bg-primary/15"
+                className="absolute inset-0 rounded-full bg-[#2563eb]/15"
                 animate={{ scale: [1, 1.3, 1], opacity: [0.7, 0.15, 0.7] }}
                 transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
               />
-              <Loader2 className="h-7 w-7 animate-spin text-primary" />
+              <Loader2 className="h-7 w-7 animate-spin text-[#2563eb]" />
             </div>
             <p className="text-sm font-medium text-foreground">Procesando...</p>
           </motion.div>
