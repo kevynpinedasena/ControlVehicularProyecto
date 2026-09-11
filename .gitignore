@@ -4,3 +4,7 @@
 **/node_modules/
 **/dist/
 *.pyc
+*.tsbuildinfo
+.agents/
+.claude/skills/
+skills-lock.json

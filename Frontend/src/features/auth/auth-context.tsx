@@ -3,6 +3,7 @@ import { createContext, type ReactNode, useContext, useState } from "react";
 
 import { authService, type CredencialesLogin } from "@/services/auth-service";
 import { almacenTokens } from "@/services/api-client";
+import { conCargaGlobal } from "@/lib/carga-global";
 import type { UsuarioActual } from "@/types";
 
 interface AuthContextValue {
@@ -26,14 +27,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     retry: false,
   });
 
-  const iniciarSesion = async (credenciales: CredencialesLogin) => {
-    const tokens = await authService.login(credenciales);
-    almacenTokens.guardarTokens(tokens.access_token, tokens.refresh_token);
-    setTieneToken(true);
-    const usuarioActual = await authService.obtenerUsuarioActual();
-    queryClient.setQueryData(["usuario-actual"], usuarioActual);
-    return usuarioActual;
-  };
+  const iniciarSesion = async (credenciales: CredencialesLogin) =>
+    conCargaGlobal(async () => {
+      const tokens = await authService.login(credenciales);
+      almacenTokens.guardarTokens(tokens.access_token, tokens.refresh_token);
+      setTieneToken(true);
+      const usuarioActual = await authService.obtenerUsuarioActual();
+      queryClient.setQueryData(["usuario-actual"], usuarioActual);
+      return usuarioActual;
+    });
 
   const cerrarSesion = () => {
     almacenTokens.limpiarTokens();
