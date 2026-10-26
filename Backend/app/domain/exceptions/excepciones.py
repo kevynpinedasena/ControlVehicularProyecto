@@ -89,3 +89,7 @@ class TipoVehiculoIncompatibleError(ErrorDominio):
 
 class PropietarioInvalidoError(ErrorDominio):
     codigo = "PROPIETARIO_INVALIDO"
+
+
+class DemasiadosIntentosError(ErrorDominio):
+    codigo = "DEMASIADOS_INTENTOS"

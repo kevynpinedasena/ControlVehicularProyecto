@@ -1,7 +1,11 @@
 """Configuración centralizada de la aplicación mediante variables de entorno."""
 from functools import lru_cache
 
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_SECRET_KEY_POR_DEFECTO = "clave_de_desarrollo_no_usar_en_produccion"
+_ADMIN_PASSWORD_POR_DEFECTO = "Plataforma123!"
 
 
 class Settings(BaseSettings):
@@ -15,7 +19,7 @@ class Settings(BaseSettings):
         "postgresql+asyncpg://conjunto_user:conjunto_pass@localhost:5432/conjunto_db"
     )
 
-    secret_key: str = "clave_de_desarrollo_no_usar_en_produccion"
+    secret_key: str = _SECRET_KEY_POR_DEFECTO
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
@@ -24,11 +28,26 @@ class Settings(BaseSettings):
     api_url: str = "http://localhost:8000"
 
     admin_plataforma_correo: str = "plataforma@conjunto.com"
-    admin_plataforma_password: str = "Plataforma123!"
+    admin_plataforma_password: str = _ADMIN_PASSWORD_POR_DEFECTO
 
     @property
     def es_produccion(self) -> bool:
         return self.environment.lower() == "production"
+
+    @model_validator(mode="after")
+    def _validar_secretos_en_produccion(self) -> "Settings":
+        """En producción, impide arrancar con los valores de ejemplo del repositorio."""
+        if self.es_produccion:
+            if self.secret_key == _SECRET_KEY_POR_DEFECTO:
+                raise ValueError(
+                    "SECRET_KEY no puede dejarse en su valor de ejemplo cuando ENVIRONMENT=production"
+                )
+            if self.admin_plataforma_password == _ADMIN_PASSWORD_POR_DEFECTO:
+                raise ValueError(
+                    "ADMIN_PLATAFORMA_PASSWORD no puede dejarse en su valor de ejemplo "
+                    "cuando ENVIRONMENT=production"
+                )
+        return self
 
 
 @lru_cache

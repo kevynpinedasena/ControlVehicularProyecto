@@ -1,7 +1,7 @@
 """Endpoints de autenticación: login, refresh y usuario actual."""
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
 from app.application.dto.auth_dto import CredencialesLoginDTO
 from app.application.use_cases.auth_use_cases import (
@@ -15,6 +15,7 @@ from app.presentation.dependencies.casos_uso import (
     caso_uso_refrescar_token,
     caso_uso_usuario_actual,
 )
+from app.presentation.dependencies.limitador_tasa import limitar_intentos_login
 from app.presentation.schemas.auth_schemas import (
     LoginRequest,
     RefreshTokenRequest,
@@ -27,9 +28,11 @@ router = APIRouter(prefix="/auth", tags=["Autenticación"])
 
 @router.post("/login", response_model=TokensResponse)
 async def iniciar_sesion(
+    request: Request,
     datos: LoginRequest,
     caso_uso: Annotated[AutenticarUsuarioUseCase, Depends(caso_uso_autenticar)],
 ) -> TokensResponse:
+    limitar_intentos_login(request, datos.correo)
     tokens = await caso_uso.ejecutar(
         CredencialesLoginDTO(
             correo=datos.correo,

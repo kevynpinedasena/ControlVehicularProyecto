@@ -21,6 +21,7 @@ from app.infrastructure.database.session import obtener_sesion
 from app.infrastructure.repositories.usuario_repository_impl import UsuarioRepository
 from app.infrastructure.security.hashing import hashear_password
 from app.main import app
+from app.presentation.dependencies.limitador_tasa import reiniciar_limitador
 
 _engine = create_async_engine(
     "sqlite+aiosqlite:///:memory:",
@@ -40,6 +41,7 @@ app.dependency_overrides[obtener_sesion] = _obtener_sesion_prueba
 
 @pytest_asyncio.fixture(autouse=True)
 async def preparar_base_datos():
+    reiniciar_limitador()
     async with _engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     yield

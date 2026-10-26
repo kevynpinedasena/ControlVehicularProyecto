@@ -84,6 +84,10 @@ Backend/
 Copiar `.env.example` a `.env` y ajustar los valores (`DATABASE_URL`, `SECRET_KEY`, tiempos de
 expiración de tokens, etc). **Nunca** subir un `.env` real con secretos al repositorio.
 
+Con `ENVIRONMENT=production`, la app rechaza arrancar si `SECRET_KEY` o `ADMIN_PLATAFORMA_PASSWORD`
+se dejan en su valor de ejemplo del repositorio (`app/config/settings.py`): hay que definir ambos
+con valores propios antes del primer despliegue.
+
 ## 7. Ejecución con Docker
 
 Desde la raíz del proyecto (`CONJUNTO/`), no desde `Backend/`:

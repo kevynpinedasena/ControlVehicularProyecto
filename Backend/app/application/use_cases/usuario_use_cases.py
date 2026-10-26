@@ -41,7 +41,7 @@ class CrearUsuarioUseCase:
             id=None,
             nombre=datos.nombre,
             correo=datos.correo,
-            password_hash=datos.password,
+            password_hash=hashear_password(datos.password),
             rol=datos.rol,
             unidad_negocio_id=unidad_negocio_id,
         )

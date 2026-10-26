@@ -24,6 +24,17 @@ async def test_acceso_sin_token_es_rechazado(cliente: AsyncClient) -> None:
     assert respuesta.status_code == 401
 
 
+async def test_login_bloquea_tras_demasiados_intentos_fallidos(cliente: AsyncClient) -> None:
+    credenciales = {"correo": "fuerza-bruta@conjunto.com", "password": "incorrecta"}
+    for _ in range(5):
+        respuesta = await cliente.post("/api/v1/auth/login", json=credenciales)
+        assert respuesta.status_code == 401
+
+    bloqueado = await cliente.post("/api/v1/auth/login", json=credenciales)
+    assert bloqueado.status_code == 429
+    assert bloqueado.json()["codigo"] == "DEMASIADOS_INTENTOS"
+
+
 async def test_login_con_slug_de_otra_unidad_es_rechazado(
     cliente: AsyncClient, credenciales_super_admin: dict[str, str]
 ) -> None:
