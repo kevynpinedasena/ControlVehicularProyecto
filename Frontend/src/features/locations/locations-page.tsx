@@ -157,7 +157,12 @@ export function LocationsPage() {
               className="mb-2 flex gap-2"
               onSubmit={(e) => {
                 e.preventDefault();
-                if (!nombreTorre.trim() || !codigoTorre.trim()) return;
+                const faltantes = [!nombreTorre.trim() && "Nombre", !codigoTorre.trim() && "Código"].filter(Boolean);
+                if (faltantes.length > 0) {
+                  setErrorTorre(`Completa los campos obligatorios: ${faltantes.join(", ")}`);
+                  return;
+                }
+                setErrorTorre(null);
                 if (torreEditando) {
                   actualizarTorre.mutate({
                     id: torreEditando.id,
@@ -249,7 +254,12 @@ export function LocationsPage() {
               className="mb-2 flex gap-2"
               onSubmit={(e) => {
                 e.preventDefault();
-                if (!torreApartamento || !numeroApartamento.trim()) return;
+                const faltantes = [!torreApartamento && "Torre", !numeroApartamento.trim() && "Número"].filter(Boolean);
+                if (faltantes.length > 0) {
+                  setErrorApartamento(`Completa los campos obligatorios: ${faltantes.join(", ")}`);
+                  return;
+                }
+                setErrorApartamento(null);
                 if (apartamentoEditando) {
                   actualizarApartamento.mutate({
                     id: apartamentoEditando.id,

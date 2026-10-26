@@ -160,7 +160,12 @@ export function ParkingPage() {
               className="mb-2 space-y-2"
               onSubmit={(e) => {
                 e.preventDefault();
-                if (!nombreBloque.trim() || !codigoBloque.trim()) return;
+                const faltantes = [!nombreBloque.trim() && "Nombre", !codigoBloque.trim() && "Código"].filter(Boolean);
+                if (faltantes.length > 0) {
+                  setErrorBloque(`Completa los campos obligatorios: ${faltantes.join(", ")}`);
+                  return;
+                }
+                setErrorBloque(null);
                 if (bloqueEditando) {
                   actualizarBloque.mutate({
                     id: bloqueEditando.id,
