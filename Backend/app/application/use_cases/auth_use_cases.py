@@ -10,7 +10,7 @@ from app.domain.exceptions.excepciones import (
 )
 from app.domain.repositories.unidad_negocio_repository import IUnidadNegocioRepository
 from app.domain.repositories.usuario_repository import IUsuarioRepository
-from app.infrastructure.security.hashing import verificar_password
+from app.infrastructure.security.hashing import verificar_password_async
 from app.infrastructure.security.jwt_handler import (
     crear_access_token,
     crear_refresh_token,
@@ -31,7 +31,9 @@ class AutenticarUsuarioUseCase:
 
     async def ejecutar(self, credenciales: CredencialesLoginDTO) -> TokensDTO:
         usuario = await self._usuarios.obtener_por_correo(credenciales.correo)
-        if usuario is None or not verificar_password(credenciales.password, usuario.password_hash):
+        if usuario is None or not await verificar_password_async(
+            credenciales.password, usuario.password_hash
+        ):
             raise CredencialesInvalidasError("El correo o la contraseña son incorrectos")
 
         if not usuario.activo:

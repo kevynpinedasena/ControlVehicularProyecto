@@ -27,6 +27,18 @@ class Settings(BaseSettings):
     frontend_url: str = "http://localhost:5173"
     api_url: str = "http://localhost:8000"
 
+    # Tamaño del thread pool usado por asyncio.to_thread (ej. verificar_password/hashear_password,
+    # que son CPU-bound). El default de asyncio (min(32, cpu_count+4)) se queda corto bajo ráfagas
+    # grandes de login simultáneo y encola el trabajo; ver app/main.py.
+    tamano_pool_hilos: int = 64
+
+    # Pool de conexiones a la base de datos (ver app/infrastructure/database/session.py). El
+    # default de SQLAlchemy (pool_size=5, max_overflow=10 => 15 conexiones) se agota bajo ráfagas
+    # grandes de requests concurrentes y las que no alcanzan turno fallan con TimeoutError tras
+    # 30s. Ajustar también si se reduce max_connections de Postgres (por defecto 100).
+    db_pool_size: int = 20
+    db_max_overflow: int = 40
+
     admin_plataforma_correo: str = "plataforma@conjunto.com"
     admin_plataforma_password: str = _ADMIN_PASSWORD_POR_DEFECTO
 

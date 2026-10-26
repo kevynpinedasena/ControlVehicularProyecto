@@ -11,6 +11,8 @@ engine = create_async_engine(
     configuracion.database_url,
     echo=not configuracion.es_produccion,
     pool_pre_ping=True,
+    pool_size=configuracion.db_pool_size,
+    max_overflow=configuracion.db_max_overflow,
 )
 
 SessionLocal = async_sessionmaker(

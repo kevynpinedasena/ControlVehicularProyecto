@@ -14,7 +14,7 @@ from app.domain.exceptions.excepciones import (
     PermisoDenegadoError,
 )
 from app.domain.repositories.usuario_repository import IUsuarioRepository
-from app.infrastructure.security.hashing import hashear_password
+from app.infrastructure.security.hashing import hashear_password_async
 
 
 async def _obtener_usuario_del_tenant(
@@ -41,7 +41,7 @@ class CrearUsuarioUseCase:
             id=None,
             nombre=datos.nombre,
             correo=datos.correo,
-            password_hash=hashear_password(datos.password),
+            password_hash=await hashear_password_async(datos.password),
             rol=datos.rol,
             unidad_negocio_id=unidad_negocio_id,
         )
@@ -81,13 +81,16 @@ class ActualizarUsuarioUseCase:
         ):
             raise CorreoDuplicadoError(f"El correo {datos.correo} ya está registrado")
 
+        password_hash = (
+            await hashear_password_async(datos.password)
+            if datos.password
+            else usuario_actual.password_hash
+        )
         usuario_actualizado = Usuario(
             id=usuario_id,
             nombre=datos.nombre,
             correo=datos.correo,
-            password_hash=(
-                hashear_password(datos.password) if datos.password else usuario_actual.password_hash
-            ),
+            password_hash=password_hash,
             rol=datos.rol,
             unidad_negocio_id=unidad_negocio_id,
             activo=usuario_actual.activo,
@@ -135,7 +138,7 @@ class RestablecerPasswordUsuarioUseCase:
         usuario = await _obtener_usuario_del_tenant(self._usuarios, unidad_negocio_id, usuario_id)
 
         nueva_password = password_personalizada or secrets.token_urlsafe(9)
-        usuario.password_hash = hashear_password(nueva_password)
+        usuario.password_hash = await hashear_password_async(nueva_password)
         await self._usuarios.actualizar(usuario)
 
         return RestablecerPasswordResultadoDTO(

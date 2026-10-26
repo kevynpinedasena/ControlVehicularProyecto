@@ -13,7 +13,7 @@ from app.domain.exceptions.excepciones import (
 )
 from app.domain.repositories.unidad_negocio_repository import IUnidadNegocioRepository
 from app.domain.repositories.usuario_repository import IUsuarioRepository
-from app.infrastructure.security.hashing import hashear_password
+from app.infrastructure.security.hashing import hashear_password_async
 from app.shared.utils.normalizador import normalizar_slug
 
 
@@ -52,7 +52,7 @@ class CrearUnidadNegocioUseCase:
                 id=None,
                 nombre=datos.admin_nombre,
                 correo=datos.admin_correo,
-                password_hash=hashear_password(datos.admin_password),
+                password_hash=await hashear_password_async(datos.admin_password),
                 rol=NombreRol.SUPER_ADMIN,
                 unidad_negocio_id=unidad.id,
             )
