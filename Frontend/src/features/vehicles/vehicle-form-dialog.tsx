@@ -83,6 +83,7 @@ export function VehicleFormDialog({ abierto, onCerrar, vehiculo }: VehicleFormDi
   }, [abierto, vehiculo, reset]);
 
   const mutacion = useMutation({
+    meta: { exito: vehiculo ? "Vehículo actualizado" : "Vehículo registrado" },
     mutationFn: async (datos: FormularioVehiculo) => {
       if (vehiculo) {
         return vehicleService.actualizar(vehiculo.id, {
@@ -139,7 +140,7 @@ export function VehicleFormDialog({ abierto, onCerrar, vehiculo }: VehicleFormDi
             >
               <SelectTrigger>
                 <SelectValue
-                  placeholder={tiposVehiculoQuery.isLoading ? "Cargando..." : "Selecciona un tipo"}
+                  placeholder={tiposVehiculoQuery.isLoading ? "Cargando…" : "Selecciona un tipo"}
                 />
               </SelectTrigger>
               <SelectContent>
@@ -165,7 +166,7 @@ export function VehicleFormDialog({ abierto, onCerrar, vehiculo }: VehicleFormDi
               >
                 <SelectTrigger>
                   <SelectValue
-                    placeholder={residentesQuery.isLoading ? "Cargando..." : "Selecciona un residente"}
+                    placeholder={residentesQuery.isLoading ? "Cargando…" : "Selecciona un residente"}
                   />
                 </SelectTrigger>
                 <SelectContent>

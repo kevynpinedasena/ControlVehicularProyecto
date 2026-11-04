@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -51,14 +51,14 @@ export function PlatformLoginPage() {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: "easeOut" }}
-        className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 shadow-lg"
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-[0_16px_40px_-16px_rgb(0_0_0/0.6)] sm:p-8"
       >
         <div className="mb-6 flex flex-col items-center gap-2 text-center">
           <div className="rounded-full bg-primary/10 p-3">
             <ShieldCheck className="h-7 w-7 text-primary" />
           </div>
-          <h1 className="text-xl font-semibold">Administración de Plataforma</h1>
+          <h1 className="text-xl font-semibold">Administración de plataforma</h1>
           <p className="text-sm text-muted-foreground">Acceso exclusivo para administradores</p>
         </div>
 
@@ -86,9 +86,9 @@ export function PlatformLoginPage() {
           </Button>
         </form>
 
-        <a href="/" className="mt-6 block text-center text-xs text-muted-foreground hover:text-foreground">
+        <Link to="/" className="mt-6 block text-center text-xs text-muted-foreground hover:text-foreground hover:underline">
           Volver a la selección de conjunto
-        </a>
+        </Link>
       </motion.div>
     </div>
   );

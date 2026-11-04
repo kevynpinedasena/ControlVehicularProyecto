@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import { Bike, Building2, Car, UserSquare2, Users } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -15,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
 import { useTenant } from "@/features/tenant/tenant-context";
 import { apartmentService, towerService } from "@/services/location-service";
 import { residentService } from "@/services/resident-service";
@@ -68,20 +68,10 @@ export function DashboardPage() {
   const irA = (ruta: string) => navigate(`/${slug}/admin/${ruta}`);
 
   const estadisticas = [
-    {
-      label: "Residentes",
-      valor: residentes.length,
-      icon: UserSquare2,
-      ruta: "residents",
-    },
-    {
-      label: "Vehículos totales",
-      valor: vehiculos.length,
-      icon: Users,
-      ruta: "vehicles",
-    },
-    { label: "Carros", valor: totalCarros, icon: Car, ruta: "vehicles" },
-    { label: "Motos", valor: totalMotos, icon: Bike, ruta: "vehicles" },
+    { label: "Residentes", valor: residentes.length, ruta: "residents" },
+    { label: "Vehículos", valor: vehiculos.length, ruta: "vehicles" },
+    { label: "Carros", valor: totalCarros, ruta: "vehicles" },
+    { label: "Motos", valor: totalMotos, ruta: "vehicles" },
   ];
 
   // Vehículos por torre: apartamento -> torre, residente -> apartamento, vehículo -> residente.
@@ -104,7 +94,7 @@ export function DashboardPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight">Panel general</h1>
+      <h1 className="text-[1.75rem] font-semibold leading-tight tracking-tight">Panel general</h1>
       <p className="mt-1 text-muted-foreground">Resumen del conjunto residencial</p>
 
       {cargando ? (
@@ -113,80 +103,62 @@ export function DashboardPage() {
         </div>
       ) : (
         <>
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 overflow-hidden rounded-xl border border-border bg-card lg:grid-cols-4">
             {estadisticas.map((stat, i) => (
-              <motion.button
+              <button
                 key={stat.label}
                 type="button"
                 onClick={() => irA(stat.ruta)}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06 }}
-                whileHover={{ y: -3 }}
-                className="text-left"
+                className={cn(
+                  "group flex flex-col gap-1 px-5 py-4 text-left transition-colors hover:bg-secondary/50 focus-visible:bg-secondary/50 focus-visible:outline-none",
+                  i % 2 === 1 && "border-l border-border",
+                  i >= 2 && "border-t border-border lg:border-t-0",
+                  i === 2 && "lg:border-l",
+                )}
               >
-                <Card className="cursor-pointer transition-shadow hover:shadow-md hover:ring-1 hover:ring-primary/30">
-                  <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
-                      {stat.label}
-                    </CardTitle>
-                    <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-                      <stat.icon className="h-4 w-4 text-primary" />
-                    </span>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-3xl font-bold">{stat.valor}</p>
-                  </CardContent>
-                </Card>
-              </motion.button>
+                <span className="flex items-center justify-between text-sm text-muted-foreground">
+                  {stat.label}
+                  <ChevronRight className="h-4 w-4 -translate-x-1 opacity-0 transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100" />
+                </span>
+                <span className="font-display text-3xl font-semibold tabular-nums tracking-tight">{stat.valor}</span>
+              </button>
             ))}
           </div>
 
-          <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }}>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Vehículos por tipo</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <BarraApilada
-                    segmentos={[
-                      { etiqueta: "Carro", valor: totalCarros, color: SERIE_1 },
-                      { etiqueta: "Moto", valor: totalMotos, color: SERIE_2 },
-                    ]}
-                  />
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Residentes por tipo</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <BarraApilada
-                    segmentos={[
-                      { etiqueta: "Propietario", valor: totalPropietarios, color: SERIE_1 },
-                      { etiqueta: "Arrendatario", valor: totalArrendatarios, color: SERIE_2 },
-                    ]}
-                  />
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-
-          <motion.div
-            className="mt-4"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.36 }}
-          >
+          <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <Building2 className="h-4 w-4" /> Vehículos por torre
-                </CardTitle>
+                <CardTitle className="text-base">Vehículos por tipo</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <BarraApilada
+                  segmentos={[
+                    { etiqueta: "Carro", valor: totalCarros, color: SERIE_1 },
+                    { etiqueta: "Moto", valor: totalMotos, color: SERIE_2 },
+                  ]}
+                />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Residentes por tipo</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <BarraApilada
+                  segmentos={[
+                    { etiqueta: "Propietario", valor: totalPropietarios, color: SERIE_1 },
+                    { etiqueta: "Arrendatario", valor: totalArrendatarios, color: SERIE_2 },
+                  ]}
+                />
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Vehículos por torre</CardTitle>
               </CardHeader>
               <CardContent>
                 {datosPorTorreVisibles.length === 0 || datosPorTorreVisibles.every((d) => d.vehiculos === 0) ? (
@@ -235,14 +207,14 @@ export function DashboardPage() {
                     </div>
                     {torresOcultas > 0 && (
                       <p className="mt-2 text-xs text-muted-foreground">
-                        +{torresOcultas} torre(s) más, no mostradas por espacio
+                        {torresOcultas === 1 ? "1 torre más no se muestra" : `${torresOcultas} torres más no se muestran`} (se listan las 10 con más vehículos)
                       </p>
                     )}
                   </>
                 )}
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         </>
       )}
     </div>
@@ -258,7 +230,7 @@ function BarraApilada({
 
   return (
     <div>
-      <div className="flex h-6 w-full gap-[2px] overflow-hidden rounded-full bg-secondary/50">
+      <div className="flex h-3 w-full gap-[2px] overflow-hidden rounded-full bg-secondary">
         {total === 0
           ? null
           : segmentos.map((s) => {
@@ -276,9 +248,9 @@ function BarraApilada({
       <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
         {segmentos.map((s) => (
           <div key={s.etiqueta} className="flex items-center gap-1.5 text-sm">
-            <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: s.color }} />
+            <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: s.color }} />
             <span className="text-muted-foreground">{s.etiqueta}</span>
-            <span className="font-semibold">{s.valor}</span>
+            <span className="font-semibold tabular-nums">{s.valor}</span>
           </div>
         ))}
       </div>

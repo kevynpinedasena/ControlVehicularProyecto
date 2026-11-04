@@ -110,6 +110,7 @@ export function ParkingSpotFormDialog({
   }, [abierto, parqueadero, reset]);
 
   const mutacion = useMutation({
+    meta: { exito: parqueadero ? "Parqueadero actualizado" : "Parqueadero creado" },
     mutationFn: async (datos: FormularioParqueadero) => {
       const payload = {
         bloque_id: Number(datos.bloque_id),
@@ -212,7 +213,7 @@ export function ParkingSpotFormDialog({
               >
                 <SelectTrigger>
                   <SelectValue
-                    placeholder={tiposVehiculoQuery.isLoading ? "Cargando..." : "Selecciona un tipo"}
+                    placeholder={tiposVehiculoQuery.isLoading ? "Cargando…" : "Selecciona un tipo"}
                   />
                 </SelectTrigger>
                 <SelectContent>
@@ -245,7 +246,7 @@ export function ParkingSpotFormDialog({
               >
                 <SelectTrigger>
                   <SelectValue
-                    placeholder={residentesQuery.isLoading ? "Cargando..." : "Selecciona un propietario"}
+                    placeholder={residentesQuery.isLoading ? "Cargando…" : "Selecciona un propietario"}
                   />
                 </SelectTrigger>
                 <SelectContent>

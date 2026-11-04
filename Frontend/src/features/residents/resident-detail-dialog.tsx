@@ -76,7 +76,7 @@ export function ResidentDetailDialog({
           ) : (
             <div className="overflow-x-auto rounded-lg border border-border">
               <table className="w-full text-sm">
-                <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
+                <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <tr>
                     <th className="px-3 py-2 font-medium">Placa</th>
                     <th className="px-3 py-2 font-medium">Tipo</th>
@@ -87,7 +87,7 @@ export function ResidentDetailDialog({
                 <tbody className="divide-y divide-border">
                   {residente.vehiculos.map((vehiculo) => (
                     <tr key={vehiculo.id}>
-                      <td className="px-3 py-2 font-mono font-semibold tracking-wider">
+                      <td className="px-3 py-2 font-placa text-[15px] font-semibold tracking-wider">
                         {vehiculo.placa}
                       </td>
                       <td className="px-3 py-2">{vehiculo.tipo_vehiculo.nombre}</td>

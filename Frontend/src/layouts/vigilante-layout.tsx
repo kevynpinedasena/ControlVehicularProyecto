@@ -1,7 +1,9 @@
 import { ArrowLeft, Car, LogOut, Search, UserSquare2 } from "lucide-react";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { TenantLogo } from "@/components/shared/tenant-logo";
+import { TRANSICION_INDICADOR, TRANSICION_PAGINA } from "@/lib/motion";
 import { textoContrastante } from "@/lib/color";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/features/auth/auth-context";
@@ -11,6 +13,7 @@ export function VigilanteLayout() {
   const { usuario, cerrarSesion } = useAuth();
   const { unidad, slug } = useTenant();
   const colorTexto = textoContrastante(unidad.color_secundario);
+  const { pathname } = useLocation();
 
   const enlaces = [
     { to: `/${slug}/consulta-placa`, label: "Consultar placa", icon: Search },
@@ -20,10 +23,10 @@ export function VigilanteLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-secondary/40">
       <header
-        className="flex flex-wrap items-center justify-between gap-4 px-6 py-4"
+        className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-3 lg:px-8"
         style={{ backgroundColor: unidad.color_secundario, color: colorTexto }}
       >
-        <div className="flex min-w-0 items-center gap-2">
+        <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-current/10">
             <TenantLogo
               logoUrl={unidad.logo_url}
@@ -46,13 +49,24 @@ export function VigilanteLayout() {
               to={to}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                  isActive ? "bg-primary text-primary-foreground" : "opacity-80 hover:bg-current/10 hover:opacity-100",
+                  "relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-[background-color,opacity,color] duration-150",
+                  isActive ? "text-primary-foreground" : "opacity-80 hover:bg-current/10 hover:opacity-100",
                 )
               }
             >
-              <Icon className="h-4 w-4" />
-              {label}
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <motion.span
+                      layoutId="indicador-menu-vigilante"
+                      transition={TRANSICION_INDICADOR}
+                      className="absolute inset-0 rounded-lg bg-primary"
+                    />
+                  )}
+                  <Icon className="relative h-4 w-4" />
+                  <span className="relative">{label}</span>
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
@@ -69,6 +83,7 @@ export function VigilanteLayout() {
           )}
           <p className="hidden text-sm opacity-70 sm:block">{usuario?.nombre}</p>
           <button
+            type="button"
             onClick={cerrarSesion}
             className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium opacity-80 transition-colors hover:bg-current/10 hover:opacity-100"
           >
@@ -77,8 +92,15 @@ export function VigilanteLayout() {
           </button>
         </div>
       </header>
-      <main className="flex-1 overflow-y-auto p-6">
-        <Outlet />
+      <main className="flex-1 overflow-y-auto p-4 lg:p-8">
+        <motion.div
+          key={pathname}
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={TRANSICION_PAGINA}
+        >
+          <Outlet />
+        </motion.div>
       </main>
     </div>
   );

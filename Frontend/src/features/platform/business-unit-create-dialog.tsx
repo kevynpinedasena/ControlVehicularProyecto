@@ -58,6 +58,7 @@ export function BusinessUnitCreateDialog({ abierto, onCerrar }: { abierto: boole
   }, [abierto, reset]);
 
   const mutacion = useMutation({
+    meta: { exito: "Unidad de negocio creada" },
     mutationFn: (datos: Formulario) => businessUnitService.crear({ ...datos, logo }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["business-units"] });

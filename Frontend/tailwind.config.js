@@ -47,7 +47,10 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ['"Instrument Sans Variable"', "system-ui", "sans-serif"],
+        display: ['"Bricolage Grotesque Variable"', '"Instrument Sans Variable"', "system-ui", "sans-serif"],
+        // Tipografía tipo DIN, como la de las placas reales.
+        placa: ['"Barlow Semi Condensed"', "ui-monospace", "monospace"],
       },
     },
   },

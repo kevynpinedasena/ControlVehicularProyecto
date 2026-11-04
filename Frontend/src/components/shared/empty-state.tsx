@@ -8,14 +8,14 @@ interface EmptyStateProps {
   action?: ReactNode;
 }
 
+// Se renderiza siempre dentro de un contenedor con borde (tabla, tarjeta o diálogo),
+// por eso no dibuja borde propio.
 export function EmptyState({ icon: Icon, title, description, action }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border py-16 text-center">
-      <div className="rounded-full bg-secondary p-3">
-        <Icon className="h-6 w-6 text-muted-foreground" />
-      </div>
+    <div className="flex flex-col items-center justify-center gap-3 px-6 py-12 text-center">
+      <Icon className="h-6 w-6 text-muted-foreground/70" strokeWidth={1.75} aria-hidden />
       <div className="space-y-1">
-        <p className="font-medium text-foreground">{title}</p>
+        <p className="text-sm font-medium text-foreground">{title}</p>
         {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
       {action}

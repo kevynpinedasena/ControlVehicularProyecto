@@ -57,6 +57,7 @@ export function ParkingSpotDetailDialog({
   };
 
   const asignarMutacion = useMutation({
+    meta: { exito: "Parqueadero actualizado" },
     mutationFn: (vars: { vehiculoId: number; parqueaderoId: number | null }) =>
       vehicleService.asignarParqueadero(vars.vehiculoId, vars.parqueaderoId),
     onSuccess: () => {
@@ -68,6 +69,7 @@ export function ParkingSpotDetailDialog({
   });
 
   const inhabilitarMutacion = useMutation({
+    meta: { exito: "Estado del vehículo actualizado" },
     mutationFn: (vehiculoId: number) => {
       const vehiculo = vehiculosDelSpotQuery.data?.find((v) => v.id === vehiculoId);
       if (!vehiculo) throw new Error("Vehículo no encontrado");
@@ -81,6 +83,7 @@ export function ParkingSpotDetailDialog({
   });
 
   const eliminarMutacion = useMutation({
+    meta: { exito: "Vehículo eliminado" },
     mutationFn: (vehiculoId: number) => vehicleService.eliminar(vehiculoId),
     onSuccess: () => {
       invalidarTodo();
@@ -166,7 +169,7 @@ export function ParkingSpotDetailDialog({
                 disabled={lleno || todosVehiculosQuery.isLoading}
               >
                 <SelectTrigger className="w-56">
-                  <SelectValue placeholder={lleno ? "Sin cupo disponible" : "Elegir vehículo..."} />
+                  <SelectValue placeholder={lleno ? "Sin cupo disponible" : "Elegir vehículo…"} />
                 </SelectTrigger>
                 <SelectContent>
                   {candidatos?.map((v) => (
@@ -198,7 +201,7 @@ export function ParkingSpotDetailDialog({
           ) : (
             <div className="overflow-x-auto rounded-lg border border-border">
               <table className="w-full text-sm">
-                <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
+                <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
                   <tr>
                     <th className="px-3 py-2 font-medium">Placa</th>
                     <th className="px-3 py-2 font-medium">Residente</th>
@@ -209,7 +212,7 @@ export function ParkingSpotDetailDialog({
                 <tbody className="divide-y divide-border">
                   {vehiculosDelSpotQuery.data?.map((vehiculo) => (
                     <tr key={vehiculo.id}>
-                      <td className="px-3 py-2 font-mono font-semibold tracking-wider">{vehiculo.placa}</td>
+                      <td className="px-3 py-2 font-placa text-[15px] font-semibold tracking-wider">{vehiculo.placa}</td>
                       <td className="px-3 py-2 text-muted-foreground">{residenteDe(vehiculo.residente_id)}</td>
                       <td className="px-3 py-2">
                         <Badge variant={vehiculo.activo ? "success" : "outline"}>
@@ -226,7 +229,7 @@ export function ParkingSpotDetailDialog({
                               }
                             >
                               <SelectTrigger className="h-7 w-32 text-xs">
-                                <SelectValue placeholder="Cambiar a..." />
+                                <SelectValue placeholder="Cambiar a…" />
                               </SelectTrigger>
                               <SelectContent>
                                 {otrosParqueaderosCompatibles.map((p) => {

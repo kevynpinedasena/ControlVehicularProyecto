@@ -54,7 +54,7 @@ export function BulkImportPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight">Carga masiva</h1>
+      <h1 className="text-[1.75rem] font-semibold leading-tight tracking-tight">Carga masiva</h1>
       <p className="mt-1 text-muted-foreground">
         Registra torres, apartamentos, residentes, vehículos, bloques y parqueaderos desde un
         archivo Excel. Si el código, documento o placa ya existe, se actualiza; si no existe, se
@@ -173,7 +173,7 @@ export function BulkImportPage() {
                 </p>
                 <div className="max-h-72 overflow-y-auto rounded-lg border border-border">
                   <table className="w-full text-sm">
-                    <thead className="sticky top-0 border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
+                    <thead className="sticky top-0 border-b border-border bg-secondary/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
                       <tr>
                         <th className="px-3 py-2 font-medium">Hoja</th>
                         <th className="px-3 py-2 font-medium">Fila</th>
@@ -210,7 +210,7 @@ export function BulkImportPage() {
                 </p>
                 <div className="max-h-72 overflow-y-auto rounded-lg border border-border">
                   <table className="w-full text-sm">
-                    <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
+                    <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
                       <tr>
                         <th className="px-3 py-2 font-medium">Hoja</th>
                         <th className="px-3 py-2 font-medium">Fila</th>

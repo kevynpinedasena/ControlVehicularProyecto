@@ -27,6 +27,7 @@ export function UsersPage() {
     queryFn: () => userService.listar({ skip: (pagina - 1) * tamanoPagina, limit: tamanoPagina }),
   });
   const cambiarEstadoMutacion = useMutation({
+    meta: { exito: "Estado del usuario actualizado" },
     mutationFn: ({ id, activo }: { id: number; activo: boolean }) => userService.cambiarEstado(id, activo),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
   });
@@ -35,7 +36,7 @@ export function UsersPage() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Usuarios</h1>
+          <h1 className="text-[1.75rem] font-semibold leading-tight tracking-tight">Usuarios</h1>
           <p className="mt-1 text-muted-foreground">Cuentas de acceso al sistema</p>
         </div>
         <Button onClick={() => setDialogoAbierto(true)} className="gap-2">
@@ -54,7 +55,7 @@ export function UsersPage() {
         ) : (
           <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
+            <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 font-medium">Nombre</th>
                 <th className="px-4 py-3 font-medium">Correo</th>

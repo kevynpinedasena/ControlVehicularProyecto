@@ -29,6 +29,7 @@ export function BusinessUnitsPage() {
   );
 
   const cambiarEstadoMutacion = useMutation({
+    meta: { exito: "Estado de la unidad actualizado" },
     mutationFn: (vars: { id: number; unidad: Awaited<ReturnType<typeof businessUnitService.listar>>[number] }) =>
       businessUnitService.actualizar(vars.id, {
         nombre: vars.unidad.nombre,
@@ -44,7 +45,7 @@ export function BusinessUnitsPage() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Unidades de negocio</h1>
+          <h1 className="text-[1.75rem] font-semibold leading-tight tracking-tight">Unidades de negocio</h1>
           <p className="mt-1 text-muted-foreground">Conjuntos residenciales registrados en la plataforma</p>
         </div>
         <Button onClick={() => setDialogoAbierto(true)} className="gap-2">
@@ -63,7 +64,7 @@ export function BusinessUnitsPage() {
         ) : (
           <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
+            <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 font-medium">Nombre</th>
                 <th className="px-4 py-3 font-medium">Código</th>
@@ -115,10 +116,10 @@ export function BusinessUnitsPage() {
                       >
                         <ExternalLink className="h-4 w-4" />
                       </a>
-                      <Button variant="ghost" size="icon" onClick={() => setUnidadUsuarios(unidad)}>
+                      <Button variant="ghost" size="icon" aria-label="Ver usuarios" title="Ver usuarios" onClick={() => setUnidadUsuarios(unidad)}>
                         <Users className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => setUnidadEditando(unidad)}>
+                      <Button variant="ghost" size="icon" aria-label="Editar" title="Editar" onClick={() => setUnidadEditando(unidad)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
                       <Button

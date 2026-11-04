@@ -53,6 +53,7 @@ export function UserFormDialog({ abierto, onCerrar }: { abierto: boolean; onCerr
   }, [abierto, reset]);
 
   const mutacion = useMutation({
+    meta: { exito: "Usuario creado" },
     mutationFn: (datos: FormularioUsuario) => userService.crear(datos),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });

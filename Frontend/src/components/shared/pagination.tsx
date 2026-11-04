@@ -86,7 +86,7 @@ function PaginationIcon({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "flex h-6 w-6 items-center justify-center rounded-md transition-colors",
+        "flex h-6 w-6 items-center justify-center rounded-md transition-[background-color,opacity,transform] duration-150 motion-safe:active:scale-90",
         disabled
           ? "cursor-not-allowed opacity-30"
           : "text-foreground hover:bg-secondary active:bg-secondary/80",

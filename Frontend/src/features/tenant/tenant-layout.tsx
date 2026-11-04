@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { Navigate, Outlet, useParams } from "react-router-dom";
+import { Link, Navigate, Outlet, useParams } from "react-router-dom";
 
 import { Spinner } from "@/components/ui/spinner";
 import { TenantContext } from "@/features/tenant/tenant-context";
@@ -56,13 +56,13 @@ export function TenantLayout() {
     return (
       <div className="flex h-screen flex-col items-center justify-center gap-2 px-4 text-center">
         <h1 className="text-xl font-semibold">Unidad deshabilitada</h1>
-        <p className="text-muted-foreground">
-          "{unidadQuery.data.nombre}" se encuentra deshabilitada temporalmente. Contacta al
-          administrador de la plataforma.
+        <p className="max-w-md text-muted-foreground">
+          «{unidadQuery.data.nombre}» está deshabilitada temporalmente. Contacta al administrador
+          de la plataforma.
         </p>
-        <a href="/" className="mt-2 text-sm text-primary underline">
+        <Link to="/" className="mt-2 text-sm font-medium text-primary underline">
           Volver al inicio
-        </a>
+        </Link>
       </div>
     );
   }

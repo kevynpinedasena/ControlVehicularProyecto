@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Building2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 import { TenantLogo } from "@/components/shared/tenant-logo";
@@ -58,8 +58,8 @@ export function LoginPage() {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: "easeOut" }}
-        className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 shadow-lg"
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-[0_8px_24px_-12px_rgb(15_23_42/0.18)] sm:p-8"
       >
         <div className="mb-6 flex flex-col items-center gap-2 text-center">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
@@ -110,9 +110,9 @@ export function LoginPage() {
           </Button>
         </form>
 
-        <a href="/" className="mt-6 block text-center text-xs text-muted-foreground hover:text-foreground">
-          No es tu conjunto? Cambiar
-        </a>
+        <Link to="/" className="mt-6 block text-center text-xs text-muted-foreground hover:text-foreground hover:underline">
+          ¿No es tu conjunto? Cambiar
+        </Link>
       </motion.div>
     </div>
   );

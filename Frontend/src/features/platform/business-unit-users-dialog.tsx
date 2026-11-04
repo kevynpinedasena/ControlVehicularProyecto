@@ -113,7 +113,7 @@ export function BusinessUnitUsersDialog({
                 <code className="flex-1 rounded-md border border-border bg-card px-3 py-2 font-mono text-sm">
                   {resultado.nueva_password}
                 </code>
-                <Button type="button" variant="outline" size="icon" onClick={copiarPassword}>
+                <Button type="button" variant="outline" size="icon" aria-label="Copiar contraseña" title="Copiar contraseña" onClick={copiarPassword}>
                   {copiado ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                 </Button>
               </div>

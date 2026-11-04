@@ -40,6 +40,7 @@ export function VehiclesPage() {
   });
 
   const eliminarMutacion = useMutation({
+    meta: { exito: "Vehículo eliminado" },
     mutationFn: (id: number) => vehicleService.eliminar(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vehicles"] });
@@ -63,7 +64,7 @@ export function VehiclesPage() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Vehículos</h1>
+          <h1 className="text-[1.75rem] font-semibold leading-tight tracking-tight">Vehículos</h1>
           <p className="mt-1 text-muted-foreground">Carros y motos registrados en el conjunto</p>
         </div>
         <Button onClick={abrirCrear} className="gap-2">
@@ -75,7 +76,7 @@ export function VehiclesPage() {
       <div className="relative mt-6 max-w-sm">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Buscar por placa..."
+          placeholder="Buscar por placa…"
           className="pl-9 uppercase"
           value={busqueda}
           onChange={(e) => {
@@ -95,7 +96,7 @@ export function VehiclesPage() {
         ) : (
           <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
+            <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 font-medium">Placa</th>
                 <th className="px-4 py-3 font-medium">Tipo</th>
@@ -107,7 +108,7 @@ export function VehiclesPage() {
             <tbody className="divide-y divide-border">
               {vehiculosQuery.data?.map((vehiculo) => (
                 <tr key={vehiculo.id} className="transition-colors hover:bg-secondary/30">
-                  <td className="px-4 py-3 font-mono font-semibold tracking-wider">{vehiculo.placa}</td>
+                  <td className="px-4 py-3 font-placa text-[15px] font-semibold tracking-wider">{vehiculo.placa}</td>
                   <td className="px-4 py-3">{vehiculo.tipo_vehiculo.nombre}</td>
                   <td className="px-4 py-3 text-muted-foreground">{residenteDe(vehiculo.residente_id)}</td>
                   <td className="px-4 py-3">
@@ -117,12 +118,13 @@ export function VehiclesPage() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end gap-1">
-                      <Button variant="ghost" size="icon" onClick={() => abrirEditar(vehiculo)}>
+                      <Button variant="ghost" size="icon" aria-label="Editar" title="Editar" onClick={() => abrirEditar(vehiculo)}>
                         <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
+                        aria-label="Eliminar" title="Eliminar"
                         className="text-destructive hover:text-destructive"
                         disabled={eliminarMutacion.isPending && eliminarMutacion.variables === vehiculo.id}
                         onClick={() => setVehiculoAEliminar(vehiculo)}

@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Building2, ShieldCheck } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -37,8 +37,8 @@ export function SelectBusinessUnitPage() {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: "easeOut" }}
-        className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 shadow-lg"
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-[0_8px_24px_-12px_rgb(15_23_42/0.18)] sm:p-8"
       >
         <div className="mb-6 flex flex-col items-center gap-2 text-center">
           <div className="rounded-full bg-primary/10 p-3">
@@ -66,6 +66,9 @@ export function SelectBusinessUnitPage() {
             <Input
               id="codigo"
               autoFocus
+              autoComplete="off"
+              autoCapitalize="none"
+              spellCheck={false}
               placeholder="mi-conjunto"
               value={codigo}
               onChange={(e) => setCodigo(e.target.value)}
@@ -77,13 +80,13 @@ export function SelectBusinessUnitPage() {
           </Button>
         </form>
 
-        <a
-          href="/plataforma/login"
+        <Link
+          to="/plataforma/login"
           className="mt-6 flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
         >
           <ShieldCheck className="h-3.5 w-3.5" />
           Acceso de administrador de plataforma
-        </a>
+        </Link>
       </motion.div>
     </div>
   );

@@ -11,10 +11,12 @@ import {
   UserSquare2,
   X,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { TenantLogo } from "@/components/shared/tenant-logo";
+import { TRANSICION_INDICADOR, TRANSICION_PAGINA } from "@/lib/motion";
 import { textoContrastante } from "@/lib/color";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/features/auth/auth-context";
@@ -25,6 +27,7 @@ export function AdminLayout() {
   const { unidad, slug } = useTenant();
   const colorTexto = textoContrastante(unidad.color_secundario);
   const [menuAbierto, setMenuAbierto] = useState(false);
+  const { pathname } = useLocation();
 
   const enlaces = [
     { to: `/${slug}/admin/dashboard`, label: "Panel", icon: LayoutDashboard },
@@ -39,21 +42,23 @@ export function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-secondary/40">
-      {menuAbierto && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={() => setMenuAbierto(false)}
-        />
-      )}
+      <div
+        aria-hidden
+        className={cn(
+          "fixed inset-0 z-40 bg-black/50 transition-opacity duration-200 lg:hidden",
+          menuAbierto ? "opacity-100" : "pointer-events-none opacity-0",
+        )}
+        onClick={() => setMenuAbierto(false)}
+      />
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 shrink-0 flex-col transition-transform duration-200 lg:static lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex w-64 shrink-0 flex-col transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] lg:static lg:translate-x-0",
           menuAbierto ? "translate-x-0" : "-translate-x-full",
         )}
         style={{ backgroundColor: unidad.color_secundario, color: colorTexto }}
       >
-        <div className="flex items-center gap-2 px-6 py-5">
+        <div className="flex items-center gap-3 px-5 py-5">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-current/10">
             <TenantLogo
               logoUrl={unidad.logo_url}
@@ -68,6 +73,8 @@ export function AdminLayout() {
             <p className="truncate text-xs opacity-70">Control Vehicular</p>
           </div>
           <button
+            type="button"
+            aria-label="Cerrar menú"
             className="shrink-0 rounded-lg p-1.5 opacity-80 hover:bg-current/10 hover:opacity-100 lg:hidden"
             onClick={() => setMenuAbierto(false)}
           >
@@ -75,7 +82,7 @@ export function AdminLayout() {
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1 px-3">
+        <nav className="flex-1 space-y-0.5 overflow-y-auto px-3">
           {enlaces.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
@@ -83,25 +90,35 @@ export function AdminLayout() {
               onClick={() => setMenuAbierto(false)}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                  isActive
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "opacity-80 hover:bg-current/10 hover:opacity-100",
+                  "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-[background-color,opacity,color] duration-150",
+                  isActive ? "text-primary-foreground" : "opacity-80 hover:bg-current/10 hover:opacity-100",
                 )
               }
             >
-              <Icon className="h-4 w-4" />
-              {label}
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <motion.span
+                      layoutId="indicador-menu-admin"
+                      transition={TRANSICION_INDICADOR}
+                      className="absolute inset-0 rounded-lg bg-primary shadow-sm"
+                    />
+                  )}
+                  <Icon className="relative h-4 w-4 shrink-0" />
+                  <span className="relative">{label}</span>
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
 
         <div className="border-t border-current/15 p-3">
-          <div className="mb-2 rounded-lg bg-current/10 px-3 py-2">
+          <div className="mb-1 px-3 py-2">
             <p className="truncate text-sm font-medium">{usuario?.nombre}</p>
             <p className="truncate text-xs opacity-70">{usuario?.correo}</p>
           </div>
           <button
+            type="button"
             onClick={cerrarSesion}
             className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium opacity-80 transition-colors hover:bg-current/10 hover:opacity-100"
           >
@@ -117,6 +134,8 @@ export function AdminLayout() {
           style={{ backgroundColor: unidad.color_secundario, color: colorTexto }}
         >
           <button
+            type="button"
+            aria-label="Abrir menú"
             className="shrink-0 rounded-lg p-1.5 opacity-80 hover:bg-current/10 hover:opacity-100"
             onClick={() => setMenuAbierto(true)}
           >
@@ -135,7 +154,14 @@ export function AdminLayout() {
         </header>
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 lg:p-8">
-          <Outlet />
+          <motion.div
+            key={pathname}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={TRANSICION_PAGINA}
+          >
+            <Outlet />
+          </motion.div>
         </main>
       </div>
     </div>

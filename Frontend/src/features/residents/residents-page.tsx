@@ -55,6 +55,7 @@ export function ResidentsPage() {
   });
 
   const eliminarMutacion = useMutation({
+    meta: { exito: "Residente eliminado" },
     mutationFn: (id: number) => residentService.eliminar(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["residents"] });
@@ -95,7 +96,7 @@ export function ResidentsPage() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Residentes</h1>
+          <h1 className="text-[1.75rem] font-semibold leading-tight tracking-tight">Residentes</h1>
           <p className="mt-1 text-muted-foreground">Propietarios y arrendatarios del conjunto</p>
         </div>
         {puedeAdministrar && (
@@ -109,7 +110,7 @@ export function ResidentsPage() {
       <div className="relative mt-6 max-w-sm">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Buscar por nombre o documento..."
+          placeholder="Buscar por nombre o documento…"
           className="pl-9"
           value={busqueda}
           onChange={(e) => {
@@ -133,7 +134,7 @@ export function ResidentsPage() {
         ) : (
           <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
+            <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 font-medium">Nombre</th>
                 <th className="px-4 py-3 font-medium">Documento</th>
@@ -173,18 +174,20 @@ export function ResidentsPage() {
                       <Button
                         variant="ghost"
                         size="icon"
+                        aria-label="Ver detalle" title="Ver detalle"
                         onClick={() => setResidenteDetalle(residente)}
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
                       {puedeAdministrar && (
                         <>
-                          <Button variant="ghost" size="icon" onClick={() => abrirEditar(residente)}>
+                          <Button variant="ghost" size="icon" aria-label="Editar" title="Editar" onClick={() => abrirEditar(residente)}>
                             <Pencil className="h-4 w-4" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="icon"
+                            aria-label="Eliminar" title="Eliminar"
                             className="text-destructive hover:text-destructive"
                             disabled={eliminarMutacion.isPending && eliminarMutacion.variables === residente.id}
                             onClick={() => setResidenteAEliminar(residente)}

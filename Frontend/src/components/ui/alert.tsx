@@ -3,7 +3,9 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-const alertVariants = cva("relative w-full rounded-lg border p-4 text-sm [&>svg]:mb-1", {
+const alertVariants = cva(
+  "relative w-full rounded-lg border p-4 text-sm animate-in fade-in-0 slide-in-from-top-1 duration-200 [&>svg]:mb-1",
+  {
   variants: {
     variant: {
       default: "bg-background text-foreground border-border",
@@ -12,7 +14,8 @@ const alertVariants = cva("relative w-full rounded-lg border p-4 text-sm [&>svg]
     },
   },
   defaultVariants: { variant: "default" },
-});
+  },
+);
 
 const Alert = React.forwardRef<
   HTMLDivElement,

@@ -111,6 +111,7 @@ export function ResidentFormDialog({ abierto, onCerrar, residente }: ResidentFor
   }, [abierto, residente, apartamentosQuery.data, reset]);
 
   const mutacion = useMutation({
+    meta: { exito: residente ? "Residente actualizado" : "Residente creado" },
     mutationFn: async (datos: FormularioResidente) => {
       const payload = {
         nombre: datos.nombre,
@@ -167,7 +168,7 @@ export function ResidentFormDialog({ abierto, onCerrar, residente }: ResidentFor
             >
               <SelectTrigger>
                 <SelectValue
-                  placeholder={tiposResidenteQuery.isLoading ? "Cargando..." : "Selecciona un tipo"}
+                  placeholder={tiposResidenteQuery.isLoading ? "Cargando…" : "Selecciona un tipo"}
                 />
               </SelectTrigger>
               <SelectContent>
@@ -196,7 +197,7 @@ export function ResidentFormDialog({ abierto, onCerrar, residente }: ResidentFor
                 disabled={torresQuery.isLoading}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={torresQuery.isLoading ? "Cargando..." : "Selecciona"} />
+                  <SelectValue placeholder={torresQuery.isLoading ? "Cargando…" : "Selecciona"} />
                 </SelectTrigger>
                 <SelectContent>
                   {torresQuery.data?.map((torre) => (
@@ -218,7 +219,7 @@ export function ResidentFormDialog({ abierto, onCerrar, residente }: ResidentFor
               >
                 <SelectTrigger>
                   <SelectValue
-                    placeholder={apartamentosQuery.isLoading ? "Cargando..." : "Selecciona"}
+                    placeholder={apartamentosQuery.isLoading ? "Cargando…" : "Selecciona"}
                   />
                 </SelectTrigger>
                 <SelectContent>

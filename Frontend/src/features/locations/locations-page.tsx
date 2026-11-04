@@ -70,6 +70,7 @@ export function LocationsPage() {
   };
 
   const crearTorre = useMutation({
+    meta: { exito: "Torre creada" },
     mutationFn: towerService.crear,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["towers"] });
@@ -79,6 +80,7 @@ export function LocationsPage() {
   });
 
   const actualizarTorre = useMutation({
+    meta: { exito: "Torre actualizada" },
     mutationFn: (vars: { id: number; nombre: string; codigo: string }) =>
       towerService.actualizar(vars.id, { nombre: vars.nombre, codigo: vars.codigo }),
     onSuccess: () => {
@@ -89,6 +91,7 @@ export function LocationsPage() {
   });
 
   const eliminarTorre = useMutation({
+    meta: { exito: "Torre eliminada" },
     mutationFn: towerService.eliminar,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["towers"] });
@@ -97,6 +100,7 @@ export function LocationsPage() {
   });
 
   const crearApartamento = useMutation({
+    meta: { exito: "Apartamento creado" },
     mutationFn: apartmentService.crear,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["apartments"] });
@@ -106,6 +110,7 @@ export function LocationsPage() {
   });
 
   const actualizarApartamento = useMutation({
+    meta: { exito: "Apartamento actualizado" },
     mutationFn: (vars: { id: number; torre_id: number; numero: string; activo: boolean }) =>
       apartmentService.actualizar(vars.id, {
         torre_id: vars.torre_id,
@@ -120,6 +125,7 @@ export function LocationsPage() {
   });
 
   const eliminarApartamento = useMutation({
+    meta: { exito: "Apartamento eliminado" },
     mutationFn: apartmentService.eliminar,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["apartments"] });
@@ -142,7 +148,7 @@ export function LocationsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight">Torres y apartamentos</h1>
+      <h1 className="text-[1.75rem] font-semibold leading-tight tracking-tight">Torres y apartamentos</h1>
       <p className="mt-1 text-muted-foreground">Estructura física del conjunto residencial</p>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
@@ -179,12 +185,13 @@ export function LocationsPage() {
               <Button
                 type="submit"
                 size="icon"
+                aria-label={torreEditando ? "Guardar cambios" : "Agregar"}
                 loading={crearTorre.isPending || actualizarTorre.isPending}
               >
                 {torreEditando ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
               </Button>
               {torreEditando && (
-                <Button type="button" variant="outline" size="icon" onClick={limpiarFormTorre}>
+                <Button type="button" variant="outline" size="icon" aria-label="Cancelar edición" title="Cancelar edición" onClick={limpiarFormTorre}>
                   <X className="h-4 w-4" />
                 </Button>
               )}
@@ -209,12 +216,13 @@ export function LocationsPage() {
                     <span className="font-medium">{torre.nombre}</span>
                     <div className="flex items-center gap-2">
                       <Badge variant="outline">{torre.codigo}</Badge>
-                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => editarTorre(torre)}>
+                      <Button variant="ghost" size="icon" aria-label="Editar" title="Editar" className="h-7 w-7" onClick={() => editarTorre(torre)}>
                         <Pencil className="h-3.5 w-3.5" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
+                        aria-label="Eliminar" title="Eliminar"
                         className="h-7 w-7 text-destructive hover:text-destructive"
                         disabled={eliminarTorre.isPending && eliminarTorre.variables === torre.id}
                         onClick={() => setTorreAEliminar(torre)}
@@ -284,7 +292,7 @@ export function LocationsPage() {
                 disabled={torresQuery.isLoading}
               >
                 <SelectTrigger className="w-40">
-                  <SelectValue placeholder={torresQuery.isLoading ? "Cargando..." : "Torre"} />
+                  <SelectValue placeholder={torresQuery.isLoading ? "Cargando…" : "Torre"} />
                 </SelectTrigger>
                 <SelectContent>
                   {torresQuery.data?.map((torre) => (
@@ -298,12 +306,13 @@ export function LocationsPage() {
               <Button
                 type="submit"
                 size="icon"
+                aria-label={apartamentoEditando ? "Guardar cambios" : "Agregar"}
                 loading={crearApartamento.isPending || actualizarApartamento.isPending}
               >
                 {apartamentoEditando ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
               </Button>
               {apartamentoEditando && (
-                <Button type="button" variant="outline" size="icon" onClick={limpiarFormApartamento}>
+                <Button type="button" variant="outline" size="icon" aria-label="Cancelar edición" title="Cancelar edición" onClick={limpiarFormApartamento}>
                   <X className="h-4 w-4" />
                 </Button>
               )}
@@ -338,6 +347,7 @@ export function LocationsPage() {
                         <Button
                           variant="ghost"
                           size="icon"
+                          aria-label="Editar" title="Editar"
                           className="h-7 w-7"
                           onClick={() => editarApartamento(apto)}
                         >
@@ -346,6 +356,7 @@ export function LocationsPage() {
                         <Button
                           variant="ghost"
                           size="icon"
+                          aria-label="Eliminar" title="Eliminar"
                           className="h-7 w-7 text-destructive hover:text-destructive"
                           disabled={eliminarApartamento.isPending && eliminarApartamento.variables === apto.id}
                           onClick={() => setApartamentoAEliminar(apto)}

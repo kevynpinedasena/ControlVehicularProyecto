@@ -66,6 +66,7 @@ export function BusinessUnitEditDialog({ abierto, onCerrar, unidad }: BusinessUn
   }, [abierto, unidad, reset]);
 
   const mutacion = useMutation({
+    meta: { exito: "Unidad de negocio actualizada" },
     mutationFn: async (datos: Formulario) => {
       if (!unidad) return;
       if (logo) {

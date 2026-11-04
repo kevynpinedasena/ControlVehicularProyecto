@@ -73,6 +73,7 @@ export function ParkingPage() {
   };
 
   const crearBloque = useMutation({
+    meta: { exito: "Bloque creado" },
     mutationFn: blockService.crear,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["parking-blocks"] });
@@ -82,6 +83,7 @@ export function ParkingPage() {
   });
 
   const actualizarBloque = useMutation({
+    meta: { exito: "Bloque actualizado" },
     mutationFn: (vars: { id: number; nombre: string; codigo: string }) =>
       blockService.actualizar(vars.id, { nombre: vars.nombre, codigo: vars.codigo }),
     onSuccess: () => {
@@ -92,6 +94,7 @@ export function ParkingPage() {
   });
 
   const eliminarBloque = useMutation({
+    meta: { exito: "Bloque eliminado" },
     mutationFn: blockService.eliminar,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["parking-blocks"] });
@@ -100,6 +103,7 @@ export function ParkingPage() {
   });
 
   const eliminarParqueadero = useMutation({
+    meta: { exito: "Parqueadero eliminado" },
     mutationFn: parkingSpotService.eliminar,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["parking-spots"] });
@@ -139,7 +143,7 @@ export function ParkingPage() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Parqueaderos</h1>
+          <h1 className="text-[1.75rem] font-semibold leading-tight tracking-tight">Parqueaderos</h1>
           <p className="mt-1 text-muted-foreground">Bloques, espacios y vehículos asignados</p>
         </div>
         <Button onClick={abrirCrear} className="gap-2">
@@ -191,6 +195,7 @@ export function ParkingPage() {
                 <Button
                   type="submit"
                   size="icon"
+                  aria-label={bloqueEditando ? "Guardar cambios" : "Agregar"}
                   className="shrink-0"
                   loading={crearBloque.isPending || actualizarBloque.isPending}
                 >
@@ -201,6 +206,7 @@ export function ParkingPage() {
                     type="button"
                     variant="outline"
                     size="icon"
+                    aria-label="Cancelar edición" title="Cancelar edición"
                     className="shrink-0"
                     onClick={limpiarFormBloque}
                   >
@@ -235,12 +241,13 @@ export function ParkingPage() {
                         </Badge>
                       </div>
                       <div className="flex shrink-0 items-center gap-1">
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => editarBloque(bloque)}>
+                        <Button variant="ghost" size="icon" aria-label="Editar" title="Editar" className="h-7 w-7" onClick={() => editarBloque(bloque)}>
                           <Pencil className="h-3.5 w-3.5" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="icon"
+                          aria-label="Eliminar" title="Eliminar"
                           className="h-7 w-7 text-destructive hover:text-destructive"
                           disabled={eliminarBloque.isPending && eliminarBloque.variables === bloque.id}
                           onClick={() => setBloqueAEliminar(bloque)}
@@ -310,7 +317,7 @@ export function ParkingPage() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase text-muted-foreground">
+                  <thead className="border-b border-border bg-secondary/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
                     <tr>
                       <th className="px-4 py-3 font-medium">Bloque</th>
                       <th className="px-4 py-3 font-medium">Número</th>
@@ -351,16 +358,18 @@ export function ParkingPage() {
                             <Button
                               variant="ghost"
                               size="icon"
+                              aria-label="Ver detalle" title="Ver detalle"
                               onClick={() => setParqueaderoDetalle(parqueadero)}
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="icon" onClick={() => abrirEditar(parqueadero)}>
+                            <Button variant="ghost" size="icon" aria-label="Editar" title="Editar" onClick={() => abrirEditar(parqueadero)}>
                               <Pencil className="h-4 w-4" />
                             </Button>
                             <Button
                               variant="ghost"
                               size="icon"
+                              aria-label="Eliminar" title="Eliminar"
                               className="text-destructive hover:text-destructive"
                               disabled={
                                 eliminarParqueadero.isPending &&
