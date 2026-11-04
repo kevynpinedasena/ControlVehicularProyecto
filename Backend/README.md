@@ -26,23 +26,28 @@ presentation → application → domain ← infrastructure
 ```
 
 - **`domain/`**: entidades (`UnidadNegocio`, `Usuario`, `Torre`, `Apartamento`, `Residente`,
-  `Vehiculo`), value objects (`Placa`), interfaces de repositorios, excepciones de negocio y el
-  servicio `ValidadorReglasVehiculo`. No depende de ninguna otra capa.
+  `Vehiculo`, `Bloque`, `Parqueadero`, `TipoResidente`, `TipoVehiculo`), value objects (`Placa`),
+  interfaces de repositorios, excepciones de negocio (cada una con su `codigo`) y el servicio
+  `ValidadorReglasVehiculo` (PROPIETARIO: máximo 2 vehículos y nunca 2 carros; ARRENDATARIO:
+  máximo 1). No depende de ninguna otra capa.
 - **`application/`**: casos de uso (un caso de uso = una acción del sistema) y DTOs. Cada caso de
   uso de un recurso "de conjunto" (torres, residentes, vehículos, usuarios) recibe explícitamente
   el `unidad_negocio_id` del llamador y valida que todo lo que toca pertenezca a esa misma unidad.
 - **`infrastructure/`**: repositorios con SQLAlchemy, modelos ORM, sesión de base de datos,
-  hashing de contraseñas, JWT y almacenamiento de logos subidos (codificados como data URI y
+  hashing de contraseñas (bcrypt, ejecutado en un hilo aparte con `hashear_password_async` /
+  `verificar_password_async` para no bloquear el event loop), JWT, lectura de Excel y generación
+  de la plantilla de carga masiva, y almacenamiento de logos subidos (codificados como data URI y
   guardados en la misma fila de la base de datos, para que sobrevivan a un despliegue con disco
   no persistente).
 - **`presentation/`**: routers de FastAPI, esquemas Pydantic y dependencias de inyección
-  (repositorios, casos de uso, autenticación, autorización por rol y extracción del
-  `unidad_negocio_id` desde el token).
+  (repositorios, casos de uso, autenticación, autorización por rol, extracción del
+  `unidad_negocio_id` desde el token y límite de intentos de login).
 - **`shared/`**: manejo centralizado de excepciones, logging y utilidades (normalización de slugs).
 
 ### Aislamiento multi-tenant (importante)
 
-Todas las tablas de un conjunto (`torres`, `apartamentos`, `residentes`, `vehiculos`) tienen una
+Todas las tablas de un conjunto (`torres`, `apartamentos`, `residentes`, `vehiculos`, `bloques`,
+`parqueaderos`, usuarios del conjunto) tienen una
 columna `unidad_negocio_id`, y las restricciones de unicidad (código de torre, documento,
 **placa**) están definidas **por unidad de negocio**, no globalmente — dos conjuntos distintos
 pueden tener perfectamente una placa `ABC123` cada uno, sin conflicto.
@@ -55,9 +60,12 @@ usa la dependencia `UnidadNegocioActual` para obtenerlo y filtrar/validar autom�
 
 | Rol | Alcance | Puede hacer |
 |---|---|---|
-| `ADMIN_PLATAFORMA` | Toda la plataforma (sin unidad de negocio propia) | Crear, editar, habilitar/deshabilitar unidades de negocio y su Super Administrador inicial |
-| `SUPER_ADMIN` | Una unidad de negocio | Control total de residentes, vehículos, torres, apartamentos y usuarios **de su propio conjunto** |
-| `VIGILANTE` | Una unidad de negocio | Únicamente consultar placas de su propio conjunto |
+| `ADMIN_PLATAFORMA` | Toda la plataforma (sin unidad de negocio propia) | Crear, editar, habilitar/deshabilitar unidades de negocio, su Super Administrador inicial, y listar/restablecer contraseña de sus usuarios |
+| `SUPER_ADMIN` | Una unidad de negocio | Control total de residentes, vehículos, torres, apartamentos, bloques, parqueaderos, usuarios y carga masiva **de su propio conjunto** |
+| `VIGILANTE` | Una unidad de negocio | Consultar placas y lectura (listados) de residentes, torres, apartamentos, bloques, parqueaderos y catálogos de su propio conjunto |
+
+Guards de rol en `presentation/dependencies/autenticacion.py`: `requerir_admin_plataforma`,
+`requerir_super_admin` y `requerir_cualquier_rol` (SUPER_ADMIN + VIGILANTE).
 
 ## 5. Estructura del proyecto
 
@@ -66,7 +74,7 @@ Backend/
 ├── app/
 │   ├── domain/{entities,repositories,services,value_objects,exceptions}/
 │   ├── application/{use_cases,dto}/
-│   ├── infrastructure/{database,repositories,security,storage}/
+│   ├── infrastructure/{database,repositories,security,storage,excel}/
 │   ├── presentation/{api/v1,schemas,dependencies}/
 │   ├── shared/{exceptions,logging,utils}/
 │   ├── config/
@@ -121,16 +129,24 @@ alembic upgrade head                          # aplicar migraciones
 alembic revision --autogenerate -m "mensaje"  # generar una nueva migración
 ```
 
+Los archivos de migración se nombran `YYYYMMDDNNNN_descripcion.py` en `migrations/versions/`.
+
 ## 10. Ejecución de pruebas
 
 ```bash
-pytest -v
+pytest -v                                              # todas
+pytest tests/integration/test_vehiculos_api.py         # un archivo
+pytest tests/unit/test_placa.py -k "<nombre>" -v       # una prueba
 ```
 
-Las pruebas usan una base de datos SQLite en memoria (no requieren PostgreSQL) y cubren: reglas de
-negocio de vehículos por tipo de residente, placas duplicadas, consulta de placa (registrada y no
-registrada), control de acceso por rol, y el flujo completo de creación de unidades de negocio
-(incluyendo slugs duplicados y unidades deshabilitadas).
+Las pruebas usan una base de datos SQLite en memoria (no requieren PostgreSQL) y cubren:
+
+- **Unitarias**: value object `Placa`, reglas de negocio de vehículos por tipo de residente y
+  validación de secretos en producción (`settings`).
+- **Integración**: autenticación multi-tenant y permisos por rol, límite de intentos de login,
+  unidades de negocio (slugs duplicados, unidades deshabilitadas), usuarios, vehículos
+  (placas duplicadas, consulta de placa registrada y no registrada), bloques y parqueaderos, y
+  carga masiva desde Excel.
 
 ## 11. Credenciales iniciales de desarrollo
 
@@ -151,15 +167,19 @@ la API esté corriendo.
 
 | Módulo | Acceso | Endpoints |
 |---|---|---|
-| Autenticación | Público | `POST /auth/login` (recibe `correo`, `password` y opcionalmente `slug_unidad_negocio`), `POST /auth/refresh`, `GET /auth/me` |
-| Unidades de negocio | `ADMIN_PLATAFORMA` | `GET/POST /business-units`, `PUT /business-units/{id}`, `POST /business-units/{id}/logo` |
+| Autenticación | Público | `POST /auth/login` (recibe `correo`, `password` y opcionalmente `slug_unidad_negocio`; máx. 5 intentos por IP+correo cada 60 s), `POST /auth/refresh`, `GET /auth/me` |
+| Unidades de negocio | `ADMIN_PLATAFORMA` | `GET/POST /business-units`, `PUT /business-units/{id}`, `POST /business-units/{id}/logo`, `GET /business-units/{id}/users`, `POST /business-units/{id}/users/{usuario_id}/reset-password` |
 | Unidad de negocio (público) | Público | `GET /business-units/public/{slug}` — nombre, logo y colores para la pantalla de ingreso |
 | Usuarios | `SUPER_ADMIN` (de su propio conjunto) | `GET/POST /users`, `GET/PUT /users/{id}`, `PATCH /users/{id}/status` |
-| Residentes | `SUPER_ADMIN` | `GET/POST /residents`, `GET/PUT/DELETE /residents/{id}` |
-| Vehículos | `SUPER_ADMIN` | `GET/POST /vehicles`, `GET/PUT/DELETE /vehicles/{id}` |
+| Residentes | Lectura: `SUPER_ADMIN` y `VIGILANTE`; escritura: `SUPER_ADMIN` | `GET/POST /residents`, `GET/PUT/DELETE /residents/{id}` |
+| Vehículos | `SUPER_ADMIN` | `GET/POST /vehicles`, `GET/PUT/DELETE /vehicles/{id}`, `PUT /vehicles/{id}/parking-spot` |
 | **Consulta de placa** | `SUPER_ADMIN` y `VIGILANTE` | `GET /vehicles/plate/{placa}` |
-| Torres | `SUPER_ADMIN` | `GET/POST /towers`, `PUT/DELETE /towers/{id}` |
-| Apartamentos | `SUPER_ADMIN` | `GET/POST /apartments`, `PUT/DELETE /apartments/{id}` |
+| Torres | Lectura: ambos; escritura: `SUPER_ADMIN` | `GET/POST /towers`, `PUT/DELETE /towers/{id}` |
+| Apartamentos | Lectura: ambos; escritura: `SUPER_ADMIN` | `GET/POST /apartments`, `PUT/DELETE /apartments/{id}` |
+| Bloques de parqueaderos | Lectura: ambos; escritura: `SUPER_ADMIN` | `GET/POST /parking-blocks`, `PUT/DELETE /parking-blocks/{id}` |
+| Parqueaderos | Lectura: ambos; escritura: `SUPER_ADMIN` | `GET/POST /parking-spots`, `PUT/DELETE /parking-spots/{id}` |
+| Carga masiva | `SUPER_ADMIN` | `GET /import/template` (plantilla Excel), `POST /import/upload` (devuelve reporte por fila) |
+| Catálogos | `SUPER_ADMIN` y `VIGILANTE` | `GET /vehicle-types`, `GET /resident-types` |
 
 Todas las respuestas de error siguen el formato:
 
@@ -169,4 +189,16 @@ Todas las respuestas de error siguen el formato:
 
 Códigos relevantes de multi-tenancy: `SLUG_DUPLICADO`, `UNIDAD_NEGOCIO_INACTIVA`,
 `ACCESO_UNIDAD_NEGOCIO_INVALIDO` (el usuario existe pero no pertenece a la unidad indicada, o un
-administrador de plataforma intentó loguearse con un `slug_unidad_negocio`).
+administrador de plataforma intentó loguearse con un `slug_unidad_negocio`). Exceso de intentos de
+login: `DEMASIADOS_INTENTOS` (HTTP 429).
+
+Al agregar un nuevo código de error, hay que registrarlo en `_CODIGO_A_STATUS`
+(`shared/exceptions/manejador_excepciones.py`); si no, responde con 400 por defecto.
+
+## 13. Agregar un endpoint
+
+El recorrido habitual es: interfaz del repositorio en `domain/` → implementación en
+`infrastructure/repositories/` → caso de uso en `application/use_cases/` → provider en
+`presentation/dependencies/casos_uso.py` → esquema Pydantic → router en `presentation/api/v1/`
+(registrado en `router.py`). Si el recurso es de un conjunto, el `unidad_negocio_id` se toma solo
+de `UnidadNegocioActual` y el caso de uso valida que cada entidad referenciada le pertenezca.
